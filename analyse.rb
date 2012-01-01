@@ -91,5 +91,11 @@ def analyse(level, items)
   singleShotDamage = (attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1)) * physicalDamageFactor + magicalDamage * magicalDamageFactor).to_i
   damagePerSecond = attacksPerSecond * singleShotDamage
 
-  printf("#{description} (#{gold} gold): #{singleShotDamage} damage per attack, %.1f damage per second\n", damagePerSecond)
+  row = [
+    description,
+    gold.to_s,
+    singleShotDamage.to_s,
+    sprintf('%.1f%%', damagePerSecond),
+  ]
+  return row
 end

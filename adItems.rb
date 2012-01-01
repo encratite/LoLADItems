@@ -1,5 +1,6 @@
-require_relative 'analyse'
+require 'nil/console'
 
+require_relative 'analyse'
 require_relative 'Item'
 
 doransBlade = Item.new("Doran's Blade", 475, ItemStats.new(attackDamage: 10))
@@ -13,6 +14,22 @@ lastWhisper = Item.new("Last Whisper", 2290, [ItemStats.new(attackDamage: 40), U
 witsEnd = Item.new("Wit's End", 2000, UniqueItemStats.new(magicalDamage: 42))
 swordOfTheDivine = Item.new("Sword of the Divine (active)", 1970, [ItemStats.new(attackSpeed: 0.6), UniqueItemStats.new(magicalDamage: 100 / 4, flatArmorPenetration: 30)])
 
+rows = [[
+  'Description',
+  'Gold',
+  'Single shot damage',
+  'Damage per second',
+]]
+
 level = 12
-analyse(level, [doransBlade, berserkersGreaves, bloodthirster])
-analyse(level, [doransBlade, berserkersGreaves, infinityEdge])
+rows << analyse(level, [doransBlade, berserkersGreaves, bloodthirster])
+rows << analyse(level, [doransBlade, berserkersGreaves, infinityEdge])
+
+level = 15
+rows << analyse(level, [doransBlade, berserkersGreaves, bloodthirster, phantomDancer])
+rows << analyse(level, [doransBlade, berserkersGreaves, bloodthirster, blackCleaver])
+rows << analyse(level, [doransBlade, berserkersGreaves, infinityEdge, phantomDancer])
+rows << analyse(level, [doransBlade, berserkersGreaves, infinityEdge, blackCleaver])
+rows << analyse(level, [doransBlade, berserkersGreaves, bloodthirster, infinityEdge])
+
+Nil.printTable(rows)
