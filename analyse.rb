@@ -18,7 +18,8 @@ def analyse(tankMode, level, items)
     baseMagicResistance = 30
     magicResistancePerLevel = 0
     runeArmor = 13
-    masteryArmor = 6
+    masteryArmor = 5
+    masteryMagicResistance = 13
     itemArmor = 0
     itemMagicResistance = 0
   else
@@ -28,34 +29,33 @@ def analyse(tankMode, level, items)
     baseMagicResistance = 30
     magicResistancePerLevel = 1.25
     runeArmor = 13
-    masteryArmor = 6
+    masteryArmor = 5
+    masteryMagicResistance = 0.15 * 9 * [level + 1, 18].max
     itemArmor = 30 + 45
     itemMagicResistance = 25
   end
 
   targetArmor = baseArmor + level * armorPerLevel + runeArmor + masteryArmor + itemArmor
-  targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + itemMagicResistance
+  targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + masteryMagicResistance + itemMagicResistance
 
-  masteryAttackDamage = 3
+  masteryAttackDamage = 3 + 0.17 * 3 * level
   runeAttackDamage = 6.8
 
   bonusAttackDamage = masteryAttackDamage + runeAttackDamage
 
   attackDamage = baseAttackDamage + level * attackDamagePerLevel
-  masteryAttackSpeed = 0.06
+  masteryAttackSpeed = 0.04
   attackSpeed = level * attackSpeedPerLevel + masteryAttackSpeed
-  masteryCriticalStrike = 0.04
-  criticalStrike = masteryCriticalStrike
+  criticalStrike = 0
 
-  masteryCriticalStrikeDamage = 0.1
+  masteryCriticalStrikeDamage = 0.05
   criticalStrikeDamage = 2.0 + masteryCriticalStrikeDamage
 
-  masteryArmorPenetration = 6
-  runeArmorPenetration = 15
+  masteryArmorPenetration = 5
+  runeArmorPenetration = 12
   armorPenetration = masteryArmorPenetration + runeArmorPenetration
 
-  masteryArmorPenetrationPercentage = 0.1
-  armorPenetrationPercentage = 0.0
+  masteryArmorPenetrationPercentage = 0.08
 
   magicalDamage = 0
 
@@ -65,9 +65,16 @@ def analyse(tankMode, level, items)
 
   gold = 0
 
+  armorPenetrationPercentages = [masteryArmorPenetrationPercentage]
+
+  statikkShiv = false
+
   items.each do |item|
     gold += item.gold
     item.stats.each do |stats|
+      if stats.statikkShiv
+        statikkShiv = true
+      end
       if uniqueStats.include?(stats)
         next
       end
@@ -79,10 +86,16 @@ def analyse(tankMode, level, items)
       criticalStrike += stats.criticalStrike
       criticalStrikeDamage += stats.criticalStrikeBonus
       armorPenetration += stats.flatArmorPenetration
-      armorPenetrationPercentage += stats.percentageArmorPenetration
+      if stats.percentageArmorPenetration > 0
+        armorPenetrationPercentages << stats.percentageArmorPenetration
+      end
       magicalDamage += stats.magicalDamage
     end
     descriptions << item.description
+  end
+
+  if statikkShiv
+    magicalDamage += (100 * (1 + criticalStrike)) / 4.0
   end
 
   attackDamage += bonusAttackDamage
@@ -91,7 +104,12 @@ def analyse(tankMode, level, items)
 
   criticalStrike = [criticalStrike, 1.0].min
 
-  effectiveArmor = [targetArmor * (1 - armorPenetrationPercentage) * (1 - masteryArmorPenetrationPercentage) - armorPenetration, 0].max
+  effectiveArmor = targetArmor
+  armorPenetrationPercentages.each do |penetrationPercentage|
+    effectiveArmor *= 1 - penetrationPercentage
+  end
+
+  effectiveArmor = [effectiveArmor - armorPenetration, 0].max
   physicalDamageFactor = damageReductionFactor(effectiveArmor)
 
   magicalDamageFactor = damageReductionFactor(targetMagicResistance)

@@ -23,7 +23,8 @@ class ItemStats
     :criticalStrikeBonus,
     :flatArmorPenetration,
     :percentageArmorPenetration,
-    :magicalDamage
+    :magicalDamage,
+    :statikkShiv,
   ]
 
   attr_reader *Members
@@ -34,6 +35,7 @@ class ItemStats
     Members.each do |symbol|
       setMember(symbol, 0)
     end
+    @statikkShiv = false
     statMap.each do |symbol, value|
       if !Members.include?(symbol)
         raise "Invalid symbol: #{symbol}"
