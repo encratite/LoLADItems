@@ -16,9 +16,11 @@ class ItemCombinator
   WitsEnd = Item.new("Wit's End", 2200, [ItemStats.new(attackSpeed: 0.4), UniqueItemStats.new(magicalDamage: 42)])
   Zephyr = Item.new("Zephyr", 2850, [ItemStats.new(attackDamage: 20, attackSpeed: 0.5)])
   StatikkShiv = Item.new("Statikk Shiv", 2500, [ItemStats.new(attackSpeed: 0.4, criticalStrike: 0.2), UniqueItemStats.new(statikkShiv: true)])
+  TheBrutaliser = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 15)])
+  RunaansHurricane = Item.new("Runaan's Hurricane", 2750, [ItemStats.new(attackSpeed: 0.7)])
 
   NonUniqueItems = [Bloodthirster, PhantomDancer]
-  UniqueItems = [InfinityEdge, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv]
+  UniqueItems = [InfinityEdge, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv, TheBrutaliser, RunaansHurricane]
   #UniqueItems = [InfinityEdge, LastWhisper]
 
   def self.combine(tankMode, level, limit, rows, uniqueItems = UniqueItems, usedCombinations = [], combination = [])
@@ -26,6 +28,19 @@ class ItemCombinator
       stringCheckTargets = [
         'Black Cleaver',
       ]
+      blackCleaver = false
+      brutalizer = false
+      combination.each do |item|
+        if item.description.index('Black Cleaver') != nil
+          blackCleaver = true
+        end
+        if item.description == 'The Brutalizer'
+          brutalizer = true
+        end
+      end
+      if blackCleaver && brutalizer
+        return
+      end
       stringCheckTargets.each do |string|
         hitCounter = 0
         combination.each do |item|
@@ -97,4 +112,4 @@ def processMode(description, tankMode)
 end
 
 processMode("Caitlyn with flat armor seals and 3/3 armor mastery", false)
-processMode("Gangplank with Wriggle's, Atma's Impaler, flat armor seals and 3/3 armor mastery", true)
+processMode("Gangplank with Wriggle's, Warmog's, Atma's Impaler, flat armor seals and 3/3 armor mastery", true)

@@ -5,6 +5,8 @@ def damageReductionFactor(resistance)
 end
 
 def analyse(tankMode, level, items)
+  fullVayneMode = true
+
   #Vayne stats
   baseAttackDamage = 50
   attackDamagePerLevel = 3.25
@@ -13,6 +15,7 @@ def analyse(tankMode, level, items)
 
   if !tankMode
     #Caitlyn stats
+    health = 390 + 30 + (80 + 6) * level
     baseArmor = 13
     armorPerLevel = 3.5
     baseMagicResistance = 30
@@ -24,6 +27,7 @@ def analyse(tankMode, level, items)
     itemMagicResistance = 0
   else
     #Gangplank stats
+    health = 495 + 30 + (81 + 6) * level + 1000
     baseArmor = 16.5
     armorPerLevel = 3.3
     baseMagicResistance = 30
@@ -100,6 +104,16 @@ def analyse(tankMode, level, items)
 
   attackDamage += bonusAttackDamage
 
+  if fullVayneMode
+    if level >= 16
+      attackDamage += 55
+    elsif level >= 11
+      attackDamage += 40
+    elsif level >= 6
+      attackDamage += 25
+    end
+  end
+
   description = descriptions.join(', ')
 
   criticalStrike = [criticalStrike, 1.0].min
@@ -117,6 +131,23 @@ def analyse(tankMode, level, items)
   attacksPerSecond = [baseAttackSpeed * (1 + attackSpeed), 2.5].min
 
   singleShotDamage = (attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1)) * physicalDamageFactor + magicalDamage * magicalDamageFactor).to_i
+
+  if fullVayneMode
+    if level >= 13
+      singleShotDamage += (60 + 0.08 * health) / 3
+    elsif level >= 12
+      singleShotDamage += (50 + 0.07 * health) / 3
+    elsif level >= 10
+      singleShotDamage += (40 + 0.06 * health) / 3
+    elsif level >= 8
+      singleShotDamage += (30 + 0.05 * health) / 3
+    elsif level >= 3
+      singleShotDamage += (20 + 0.04 * health) / 3
+    end
+  end
+
+  singleShotDamage = singleShotDamage.round(1)
+
   damagePerSecond = attacksPerSecond * singleShotDamage
 
   row = [
