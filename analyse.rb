@@ -5,13 +5,22 @@ def damageReductionFactor(resistance)
 end
 
 def analyse(tankMode, level, items)
-  fullVayneMode = true
+  vayneMode = false
+  fullVayneMode = false
+  dravenMode = true
+  spinningAxesMode = true
 
-  #Vayne stats
-  baseAttackDamage = 50
-  attackDamagePerLevel = 3.25
-  baseAttackSpeed = 0.658
-  attackSpeedPerLevel = 0.031
+  if vayneMode
+    baseAttackDamage = 50
+    attackDamagePerLevel = 3.25
+    baseAttackSpeed = 0.658
+    attackSpeedPerLevel = 0.031
+  elsif dravenMode
+    baseAttackDamage = 46.5
+    attackDamagePerLevel = 3.5
+    baseAttackSpeed = 0.679
+    attackSpeedPerLevel = 0.026
+  end
 
   if !tankMode
     #Caitlyn stats
@@ -144,6 +153,14 @@ def analyse(tankMode, level, items)
     elsif level >= 3
       singleShotDamage += (20 + 0.04 * health) / 3
     end
+  end
+
+  if dravenMode
+    singleShotDamage += criticalStrike * (30 + 4 * level)
+  end
+
+  if spinningAxesMode
+    singleShotDamage += 0.85 * attackDamage
   end
 
   singleShotDamage = singleShotDamage.round(1)
