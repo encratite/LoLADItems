@@ -97,7 +97,7 @@ def processMode(description, tankMode)
     rows = []
     ItemCombinator.combine(tankMode, level, itemCount, rows)
     rows.sort! do |x, y|
-      y[4] <=> x[4]
+      y[5] <=> x[5]
     end
     rows = [[
       'Description',

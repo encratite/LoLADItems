@@ -30,8 +30,9 @@ def analyse(tankMode, level, items)
     baseMagicResistance = 30
     magicResistancePerLevel = 0
     runeArmor = 13
+    runeMagicResistance = 9 * 1.34
     masteryArmor = 5
-    masteryMagicResistance = 13
+    masteryMagicResistance = 0
     itemArmor = 0
     itemMagicResistance = 0
   else
@@ -42,6 +43,7 @@ def analyse(tankMode, level, items)
     baseMagicResistance = 30
     magicResistancePerLevel = 1.25
     runeArmor = 9 * 1.41
+    runeMagicResistance = 9 * 0.15 * level
     masteryArmor = 5 + 1
     masteryMagicResistance = 5 + 1
     itemArmor = 30 + 45
@@ -49,7 +51,7 @@ def analyse(tankMode, level, items)
   end
 
   targetArmor = baseArmor + level * armorPerLevel + runeArmor + masteryArmor + itemArmor
-  targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + masteryMagicResistance + itemMagicResistance
+  targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + runeMagicResistance + masteryMagicResistance + itemMagicResistance
 
   masteryAttackDamage = 3 + 0.17 * 3 * level
   runeAttackDamage = 6.8
