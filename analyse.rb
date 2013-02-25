@@ -5,10 +5,10 @@ def damageReductionFactor(resistance)
 end
 
 def analyse(tankMode, level, items)
-  vayneMode = false
+  vayneMode = true
   fullVayneMode = false
-  dravenMode = true
-  spinningAxesMode = true
+  dravenMode = false
+  spinningAxesMode = false
 
   if vayneMode
     baseAttackDamage = 50
@@ -35,15 +35,15 @@ def analyse(tankMode, level, items)
     itemArmor = 0
     itemMagicResistance = 0
   else
-    #Gangplank stats
-    health = 495 + 30 + (81 + 6) * level + 1000
-    baseArmor = 16.5
-    armorPerLevel = 3.3
+    #Xin Zhao stats
+    health = 445 + 30 + (87 + 6) * level + 1000
+    baseArmor = 16.2
+    armorPerLevel = 3.7
     baseMagicResistance = 30
     magicResistancePerLevel = 1.25
-    runeArmor = 13
-    masteryArmor = 5
-    masteryMagicResistance = 0.15 * 9 * [level + 1, 18].max
+    runeArmor = 9 * 1.41
+    masteryArmor = 5 + 1
+    masteryMagicResistance = 5 + 1
     itemArmor = 30 + 45
     itemMagicResistance = 25
   end
@@ -81,12 +81,16 @@ def analyse(tankMode, level, items)
   armorPenetrationPercentages = [masteryArmorPenetrationPercentage]
 
   statikkShiv = false
+  bladeOfTheRuinedKing = false
 
   items.each do |item|
     gold += item.gold
     item.stats.each do |stats|
       if stats.statikkShiv
         statikkShiv = true
+      end
+      if stats.bladeOfTheRuinedKing
+        bladeOfTheRuinedKing = true
       end
       if uniqueStats.include?(stats)
         next
@@ -163,6 +167,10 @@ def analyse(tankMode, level, items)
     singleShotDamage += 0.85 * attackDamage
   end
 
+  if bladeOfTheRuinedKing
+    singleShotDamage += 0.5 * 0.05 * health
+  end
+
   singleShotDamage = singleShotDamage.round(1)
 
   damagePerSecond = attacksPerSecond * singleShotDamage
@@ -173,6 +181,7 @@ def analyse(tankMode, level, items)
     singleShotDamage.to_s,
     bonusAttackDamage.to_i.to_s,
     sprintf('%.1f', damagePerSecond),
+    sprintf('%.4f', damagePerSecond / gold),
   ]
   return row
 end

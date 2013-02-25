@@ -11,6 +11,16 @@ class Item
     end
     @stats = stats
   end
+
+  def getDescriptionForComparison
+    if @description == "Doran's Blade"
+      return "~~#{@description}"
+    elsif @description == "Berserker's Greaves"
+      return "~#{@description}"
+    else
+      return @description
+    end
+  end
 end
 
 class ItemStats
@@ -25,6 +35,7 @@ class ItemStats
     :percentageArmorPenetration,
     :magicalDamage,
     :statikkShiv,
+    :bladeOfTheRuinedKing,
   ]
 
   attr_reader *Members

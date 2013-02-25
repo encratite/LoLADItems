@@ -6,22 +6,23 @@ require_relative 'Item'
 class ItemCombinator
   DoransBlade = Item.new("Doran's Blade", 475, ItemStats.new(attackDamage: 10))
   BerserkersGreaves = Item.new("Berserker's Greaves", 900, ItemStats.new(attackSpeed: 0.2))
-  Bloodthirster = Item.new("Bloodthirster", 3000, ItemStats.new(attackDamage: 100))
+  Bloodthirster = Item.new("Bloodthirster", 3200, ItemStats.new(attackDamage: 100))
   Zeal = Item.new("Zeal", 1175, ItemStats.new(attackSpeed: 0.18, criticalStrike: 0.1))
   PhantomDancer = Item.new("Phantom Dancer", 2800, ItemStats.new(attackSpeed: 0.5, criticalStrike: 0.3))
   InfinityEdge = Item.new("Infinity Edge", 3800, [ItemStats.new(attackDamage: 70, criticalStrike: 0.25), UniqueItemStats.new(criticalStrikeBonus: 0.5)])
-  BlackCleaver = Item.new("Black Cleaver (no stacks)", 3000, ItemStats.new(attackDamage: 50, flatArmorPenetration: 0.15))
-  BlackCleaverStacks = Item.new("Black Cleaver (four stacks)", 3000, ItemStats.new(attackDamage: 50, flatArmorPenetration: 15, percentageArmorPenetration: 0.3))
-  LastWhisper = Item.new("Last Whisper", 2135, [ItemStats.new(attackDamage: 40), UniqueItemStats.new(percentageArmorPenetration: 0.35)])
+  BlackCleaver = Item.new("Black Cleaver (no stacks)", 3000, ItemStats.new(attackDamage: 50, flatArmorPenetration: 10))
+  BlackCleaverStacks = Item.new("Black Cleaver (five stacks)", 3000, ItemStats.new(attackDamage: 50, flatArmorPenetration: 10, percentageArmorPenetration: 0.25))
+  LastWhisper = Item.new("Last Whisper", 2300, [ItemStats.new(attackDamage: 40), UniqueItemStats.new(percentageArmorPenetration: 0.35)])
   WitsEnd = Item.new("Wit's End", 2200, [ItemStats.new(attackSpeed: 0.4), UniqueItemStats.new(magicalDamage: 42)])
   Zephyr = Item.new("Zephyr", 2850, [ItemStats.new(attackDamage: 20, attackSpeed: 0.5)])
   StatikkShiv = Item.new("Statikk Shiv", 2500, [ItemStats.new(attackSpeed: 0.4, criticalStrike: 0.2), UniqueItemStats.new(statikkShiv: true)])
-  TheBrutaliser = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 15)])
+  TheBrutaliser = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 10)])
   RunaansHurricane = Item.new("Runaan's Hurricane", 2750, [ItemStats.new(attackSpeed: 0.7)])
+  BladeOfTheRuinedKing = Item.new("Blade of the Ruined King", 2900, [ItemStats.new(attackDamage: 45), UniqueItemStats.new(bladeOfTheRuinedKing: true)])
 
-  NonUniqueItems = [Bloodthirster, PhantomDancer]
-  UniqueItems = [InfinityEdge, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv, TheBrutaliser, RunaansHurricane]
-  #UniqueItems = [InfinityEdge, LastWhisper]
+  NonUniqueItems = [Bloodthirster]
+  UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing]
+  #UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv, TheBrutaliser, RunaansHurricane, BladeOfTheRuinedKing]
 
   def self.combine(tankMode, level, limit, rows, uniqueItems = UniqueItems, usedCombinations = [], combination = [])
     if combination.size == limit
@@ -52,13 +53,13 @@ class ItemCombinator
           return
         end
       end
-      combinationCheck = combination.sort do |x, y|
-        x.description <=> y.description
+      combination.sort! do |x, y|
+        x.getDescriptionForComparison <=> y.getDescriptionForComparison
       end
-      if usedCombinations.include?(combinationCheck)
+      if usedCombinations.include?(combination)
         return
       end
-      usedCombinations.push(combinationCheck)
+      usedCombinations.push(combination)
       items = []
       if level <= 15
         items << DoransBlade
@@ -104,6 +105,7 @@ def processMode(description, tankMode)
       'Single shot damage',
       'Bonus attack damage',
       'Damage per second',
+      'Damage per second per gold spent',
     ]] + rows
     itemCount += 1
     Nil.printTable(rows)
@@ -112,4 +114,4 @@ def processMode(description, tankMode)
 end
 
 processMode("Caitlyn with flat armor seals and 3/3 armor mastery", false)
-processMode("Gangplank with Wriggle's, Warmog's, Atma's Impaler, flat armor seals and 3/3 armor mastery", true)
+processMode("Xin Zhao with Wriggle's, Treads, Warmog's, Chain Vest, flat armor seals and defensive masteries", true)
