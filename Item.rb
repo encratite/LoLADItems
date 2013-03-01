@@ -47,7 +47,7 @@ class ItemStats
       setMember(symbol, 0)
     end
     @statikkShiv = false
-    bladeOfTheRuinedKing = false
+    @bladeOfTheRuinedKing = false
     statMap.each do |symbol, value|
       if !Members.include?(symbol)
         raise "Invalid symbol: #{symbol}"

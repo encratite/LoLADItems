@@ -150,7 +150,7 @@ def analyse(tankMode, level, items)
 
   attacksPerSecond = [baseAttackSpeed * (1 + attackSpeed), 2.5].min
 
-  singleShotDamage = (attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1)) * physicalDamageFactor + magicalDamage * magicalDamageFactor).to_i
+  singleShotDamage = attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1)) * physicalDamageFactor + magicalDamage * magicalDamageFactor
 
   if fullVayneMode
     if level >= 13
@@ -175,7 +175,6 @@ def analyse(tankMode, level, items)
   end
 
   if bladeOfTheRuinedKing
-    # Pessimistic
     healthRatio = 0.5
     singleShotDamage += healthRatio * 0.05 * health
   end

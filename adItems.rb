@@ -18,7 +18,7 @@ class ItemCombinator
   StatikkShiv = Item.new("Statikk Shiv", 2500, [ItemStats.new(attackSpeed: 0.4, criticalStrike: 0.2), UniqueItemStats.new(statikkShiv: true)])
   TheBrutaliser = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 10)])
   RunaansHurricane = Item.new("Runaan's Hurricane", 2750, [ItemStats.new(attackSpeed: 0.7)])
-  BladeOfTheRuinedKing = Item.new("Blade of the Ruined King", 2850, [ItemStats.new(attackDamage: 30, attackSpeed: 0.3), UniqueItemStats.new(bladeOfTheRuinedKing: true)])
+  BladeOfTheRuinedKing = Item.new("Blade of the Ruined King", 2850, [ItemStats.new(attackDamage: 30, attackSpeed: 0.4), UniqueItemStats.new(bladeOfTheRuinedKing: true)])
 
   NonUniqueItems = [Bloodthirster]
   UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing]
