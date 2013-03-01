@@ -33,11 +33,12 @@ def analyse(tankMode, level, items)
     runeMagicResistance = 9 * 1.34
     masteryArmor = 5
     masteryMagicResistance = 0
+    itemHealth = 0
     itemArmor = 0
     itemMagicResistance = 0
   else
     #Xin Zhao stats
-    health = 445 + 30 + (87 + 6) * level + 1000
+    health = 445 + 30 + (87 + 6) * level
     baseArmor = 16.2
     armorPerLevel = 3.7
     baseMagicResistance = 30
@@ -46,9 +47,12 @@ def analyse(tankMode, level, items)
     runeMagicResistance = 9 * 0.15 * level
     masteryArmor = 5 + 1
     masteryMagicResistance = 5 + 1
+    itemHealth = 450 + 1000
     itemArmor = 30 + 45
     itemMagicResistance = 25
   end
+
+  health += itemHealth
 
   targetArmor = baseArmor + level * armorPerLevel + runeArmor + masteryArmor + itemArmor
   targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + runeMagicResistance + masteryMagicResistance + itemMagicResistance
@@ -114,7 +118,8 @@ def analyse(tankMode, level, items)
   end
 
   if statikkShiv
-    magicalDamage += (100 * (1 + criticalStrike)) / 4.0
+    shivDamage = (100 * (1 + criticalStrike)) / 10.0
+    magicalDamage += shivDamage
   end
 
   attackDamage += bonusAttackDamage
@@ -170,7 +175,9 @@ def analyse(tankMode, level, items)
   end
 
   if bladeOfTheRuinedKing
-    singleShotDamage += 0.5 * 0.05 * health
+    # Pessimistic
+    healthRatio = 0.5
+    singleShotDamage += healthRatio * 0.05 * health
   end
 
   singleShotDamage = singleShotDamage.round(1)
