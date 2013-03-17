@@ -5,10 +5,11 @@ def damageReductionFactor(resistance)
 end
 
 def analyse(tankMode, level, items)
-  vayneMode = true
+  vayneMode = false
   fullVayneMode = false
   dravenMode = false
   spinningAxesMode = false
+  threshMode = true
 
   if vayneMode
     baseAttackDamage = 50
@@ -20,6 +21,11 @@ def analyse(tankMode, level, items)
     attackDamagePerLevel = 3.5
     baseAttackSpeed = 0.679
     attackSpeedPerLevel = 0.026
+  elsif threshMode
+    baseAttackDamage = 46
+    attackDamagePerLevel = 2.2
+    baseAttackSpeed = 0.625
+    attackSpeedPerLevel = 0.01
   end
 
   if !tankMode
@@ -70,8 +76,13 @@ def analyse(tankMode, level, items)
   masteryCriticalStrikeDamage = 0.05
   criticalStrikeDamage = 2.0 + masteryCriticalStrikeDamage
 
-  masteryArmorPenetration = 5
-  runeArmorPenetration = 12
+  if threshMode
+    masteryArmorPenetration = 0
+    runeArmorPenetration = 0
+  else
+    masteryArmorPenetration = 5
+    runeArmorPenetration = 12
+  end
   armorPenetration = masteryArmorPenetration + runeArmorPenetration
 
   masteryArmorPenetrationPercentage = 0.08
@@ -120,6 +131,12 @@ def analyse(tankMode, level, items)
   if statikkShiv
     shivDamage = (100 * (1 + criticalStrike)) / 10.0
     magicalDamage += shivDamage
+  end
+
+  if threshMode
+    souls = 70
+    deathSentence = souls + 2.0 * attackDamage
+    magicalDamage += deathSentence
   end
 
   attackDamage += bonusAttackDamage

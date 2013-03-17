@@ -21,7 +21,7 @@ class ItemCombinator
   BladeOfTheRuinedKing = Item.new("Blade of the Ruined King", 3200, [ItemStats.new(attackDamage: 25, attackSpeed: 0.4), UniqueItemStats.new(bladeOfTheRuinedKing: true)])
 
   NonUniqueItems = [Bloodthirster]
-  UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing]
+  UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing, WitsEnd]
   #UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv, TheBrutaliser, RunaansHurricane, BladeOfTheRuinedKing]
 
   def self.combine(tankMode, level, limit, rows, uniqueItems = UniqueItems, usedCombinations = [], combination = [])
