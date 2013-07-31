@@ -9,7 +9,8 @@ def analyse(tankMode, level, items)
   fullVayneMode = false
   dravenMode = false
   spinningAxesMode = false
-  threshMode = true
+  threshMode = false
+  masterYiMode = true
 
   if vayneMode
     baseAttackDamage = 50
@@ -26,6 +27,11 @@ def analyse(tankMode, level, items)
     attackDamagePerLevel = 2.2
     baseAttackSpeed = 0.625
     attackSpeedPerLevel = 0.01
+  elsif masterYiMode
+    baseAttackDamage = 55.1
+    attackDamagePerLevel = 3.1
+    baseAttackSpeed = 0.679
+    attackSpeedPerLevel = 0.0275
   end
 
   if !tankMode
@@ -63,8 +69,13 @@ def analyse(tankMode, level, items)
   targetArmor = baseArmor + level * armorPerLevel + runeArmor + masteryArmor + itemArmor
   targetMagicResistance = baseMagicResistance + level * magicResistancePerLevel + runeMagicResistance + masteryMagicResistance + itemMagicResistance
 
-  masteryAttackDamage = 3 + 0.17 * 3 * level
-  runeAttackDamage = 6.8
+  if threshMode
+    masteryAttackDamage = 0
+    runeAttackDamage = 0
+  else
+    masteryAttackDamage = 3 + 0.17 * 3 * level
+    runeAttackDamage = 6.8
+  end
 
   bonusAttackDamage = masteryAttackDamage + runeAttackDamage
 
@@ -99,6 +110,7 @@ def analyse(tankMode, level, items)
 
   statikkShiv = false
   bladeOfTheRuinedKing = false
+  malady = false
 
   items.each do |item|
     gold += item.gold
@@ -108,6 +120,9 @@ def analyse(tankMode, level, items)
       end
       if stats.bladeOfTheRuinedKing
         bladeOfTheRuinedKing = true
+      end
+      if stats.malady
+        malady = true
       end
       if uniqueStats.include?(stats)
         next
@@ -135,8 +150,18 @@ def analyse(tankMode, level, items)
 
   if threshMode
     souls = 70
-    deathSentence = souls + 2.0 * attackDamage
+    deathSentence = souls + 2.0 * attackDamage / 3
     magicalDamage += deathSentence
+  end
+
+  if malady
+    abilityPower = 25
+    if threshMode
+      abilityPower += 65
+    end
+    magicalDamage += 15 + 0.1 * abilityPower
+    stacks = 1
+    targetMagicResistance -= stacks * 4
   end
 
   attackDamage += bonusAttackDamage
@@ -148,6 +173,28 @@ def analyse(tankMode, level, items)
       attackDamage += 40
     elsif level >= 6
       attackDamage += 25
+    end
+  end
+
+  if masterYiMode
+    if level >= 16
+      attackSpeed += 0.8
+    elsif level >= 11
+      attackSpeed += 0.55
+    elsif level >= 6
+      attackSpeed += 0.3
+    end
+
+    if level >= 13
+      attackDamage *= 1.15
+    elsif level >= 12
+      attackDamage *= 1.13
+    elsif level >= 10
+      attackDamage *= 1.11
+    elsif level >= 8
+      attackDamage *= 1.09
+    elsif level >= 2
+      attackDamage *= 1.07
     end
   end
 
@@ -167,7 +214,22 @@ def analyse(tankMode, level, items)
 
   attacksPerSecond = [baseAttackSpeed * (1 + attackSpeed), 2.5].min
 
-  singleShotDamage = attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1)) * physicalDamageFactor + magicalDamage * magicalDamageFactor
+  physicalDamage = attackDamage * (1 + criticalStrike * (criticalStrikeDamage - 1))
+
+  if dravenMode
+    physicalDamage += criticalStrike * (30 + 4 * level)
+  end
+
+  if spinningAxesMode
+    physicalDamage += 0.85 * attackDamage
+  end
+
+  if bladeOfTheRuinedKing
+    healthRatio = 0.5
+    physicalDamage += healthRatio * 0.05 * health
+  end
+
+  singleShotDamage = physicalDamage * physicalDamageFactor + magicalDamage * magicalDamageFactor
 
   if fullVayneMode
     if level >= 13
@@ -183,17 +245,18 @@ def analyse(tankMode, level, items)
     end
   end
 
-  if dravenMode
-    singleShotDamage += criticalStrike * (30 + 4 * level)
-  end
-
-  if spinningAxesMode
-    singleShotDamage += 0.85 * attackDamage
-  end
-
-  if bladeOfTheRuinedKing
-    healthRatio = 0.5
-    singleShotDamage += healthRatio * 0.05 * health
+  if masterYiMode
+    if level >= 13
+      singleShotDamage += 30 + 0.2 * attackDamage
+    elsif level >= 12
+      singleShotDamage += 30 + 0.175 * attackDamage
+    elsif level >= 10
+      singleShotDamage += 30 + 0.15 * attackDamage
+    elsif level >= 8
+      singleShotDamage += 30 + 0.125 * attackDamage
+    elsif level >= 2
+      singleShotDamage += 30 + 0.1 * attackDamage
+    end
   end
 
   singleShotDamage = singleShotDamage.round(1)
@@ -206,6 +269,7 @@ def analyse(tankMode, level, items)
     singleShotDamage.to_s,
     bonusAttackDamage.to_i.to_s,
     sprintf('%.1f', damagePerSecond),
+    sprintf('%.4f', singleShotDamage / gold),
     sprintf('%.4f', damagePerSecond / gold),
   ]
   return row

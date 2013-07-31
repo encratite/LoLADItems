@@ -16,15 +16,22 @@ class ItemCombinator
   WitsEnd = Item.new("Wit's End", 2200, [ItemStats.new(attackSpeed: 0.4), UniqueItemStats.new(magicalDamage: 42)])
   Zephyr = Item.new("Zephyr", 2850, [ItemStats.new(attackDamage: 20, attackSpeed: 0.5)])
   StatikkShiv = Item.new("Statikk Shiv", 2500, [ItemStats.new(attackSpeed: 0.4, criticalStrike: 0.2), UniqueItemStats.new(statikkShiv: true)])
-  TheBrutaliser = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 10)])
+  TheBrutalizer = Item.new("The Brutalizer", 1337, [ItemStats.new(attackDamage: 25), UniqueItemStats.new(flatArmorPenetration: 10)])
   RunaansHurricane = Item.new("Runaan's Hurricane", 2750, [ItemStats.new(attackSpeed: 0.7)])
   BladeOfTheRuinedKing = Item.new("Blade of the Ruined King", 3200, [ItemStats.new(attackDamage: 25, attackSpeed: 0.4), UniqueItemStats.new(bladeOfTheRuinedKing: true)])
+  Malady = Item.new("Malady", 2035, [ItemStats.new(attackSpeed: 0.45), UniqueItemStats.new(malady: true)])
+  Hexdrinker = Item.new("Hexdrinker", 1350, ItemStats.new(attackDamage: 25))
+  RecurveBow = Item.new("Recurve Bow", 950, ItemStats.new(attackSpeed: 0.3))
+  LongSword = Item.new("Long Sword", 400, ItemStats.new(attackDamage: 10))
+  Pickaxe = Item.new("Pickaxe", 875, ItemStats.new(attackDamage: 25))
+  BFSword = Item.new("B. F. Sword", 1550, ItemStats.new(attackDamage: 45))
+  YoumuusGhostblade = Item.new("Youmuu's Ghostblade (with active)", 2700, ItemStats.new(attackDamage: 30, criticalStrike: 0.15, flatArmorPenetration: 20, attackSpeed: 0.4))
 
   NonUniqueItems = [Bloodthirster]
-  UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing, WitsEnd]
-  #UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, BlackCleaver, BlackCleaverStacks, Zephyr, StatikkShiv, TheBrutaliser, RunaansHurricane, BladeOfTheRuinedKing]
+  UniqueItems = [InfinityEdge, PhantomDancer, LastWhisper, StatikkShiv, BladeOfTheRuinedKing, YoumuusGhostblade]
 
   def self.combine(tankMode, level, limit, rows, uniqueItems = UniqueItems, usedCombinations = [], combination = [])
+    defaultItems = false
     if combination.size == limit
       stringCheckTargets = [
         'Black Cleaver',
@@ -61,13 +68,12 @@ class ItemCombinator
       end
       usedCombinations.push(combination)
       items = []
-      if level <= 15
-        items << DoransBlade
+      if defaultItems
+        if level <= 12
+          items << DoransBlade
+        end
+        items << BerserkersGreaves
       end
-      if level <= 12
-        items << DoransBlade
-      end
-      items << BerserkersGreaves
       items += combination
       row = analyse(tankMode, level, items)
       rows.push(row)
@@ -96,16 +102,18 @@ def processMode(description, tankMode)
     print "Number of big AD items at level #{level}: #{itemCount}\n\n"
     rows = []
     ItemCombinator.combine(tankMode, level, itemCount, rows)
+    index = 6
     rows.sort! do |x, y|
-      y[5] <=> x[5]
+      y[index] <=> x[index]
     end
     rows = [[
-      'Description',
-      'Gold',
-      'Single shot damage',
-      'Bonus attack damage',
-      'Damage per second',
-      'Damage per second per gold spent',
+        'Description',
+        'Gold',
+        'Damage',
+        'Bonus AD',
+        'DPS',
+        'Damage/gold',
+        'DPS/gold',
     ]] + rows
     itemCount += 1
     Nil.printTable(rows)

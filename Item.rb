@@ -36,6 +36,7 @@ class ItemStats
     :magicalDamage,
     :statikkShiv,
     :bladeOfTheRuinedKing,
+    :malady,
   ]
 
   attr_reader *Members
@@ -48,6 +49,7 @@ class ItemStats
     end
     @statikkShiv = false
     @bladeOfTheRuinedKing = false
+    @malady = false
     statMap.each do |symbol, value|
       if !Members.include?(symbol)
         raise "Invalid symbol: #{symbol}"
