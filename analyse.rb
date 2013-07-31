@@ -257,6 +257,8 @@ def analyse(tankMode, level, items)
     elsif level >= 2
       singleShotDamage += 30 + 0.1 * attackDamage
     end
+
+    singleShotDamage += 0.25 * 0.5 * singleShotDamage
   end
 
   singleShotDamage = singleShotDamage.round(1)
